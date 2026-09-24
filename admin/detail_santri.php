@@ -115,21 +115,7 @@ include 'layout/sidebar.php';
 </style>
 
 <div class="container-fluid">
-    <!-- TAMBAHKAN BLOK ALERT INI -->
-    <?php if (isset($_SESSION['detail_status']) && isset($_SESSION['detail_message'])): ?>
-        <div class="alert alert-<?= $_SESSION['detail_status'] === 'success' ? 'success' : 'danger'; ?> alert-dismissible fade show mb-4 shadow-sm rounded-3 border-0" role="alert">
-            <i class="fas <?= $_SESSION['detail_status'] === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'; ?> me-2"></i>
-            <?= htmlspecialchars($_SESSION['detail_message']); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php
-        // Hapus session setelah ditampilkan
-        unset($_SESSION['detail_status']);
-        unset($_SESSION['detail_message']);
-        ?>
-    <?php endif; ?>
-    <!-- AKHIR BLOK ALERT -->
-    
+  
     <!-- BARIS HEADER DAN NAVIGASI -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>

@@ -24,17 +24,7 @@ include 'layout/sidebar.php';
         <?php endif; ?>
     </div>
 
-    <!-- Alert Notifikasi -->
-    <?php if (isset($_SESSION['santri_message'])): ?>
-        <div class="alert alert-<?= $_SESSION['santri_status']; ?> alert-dismissible fade show shadow-sm" role="alert">
-            <?= $_SESSION['santri_message']; ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php 
-            unset($_SESSION['santri_message']);
-            unset($_SESSION['santri_status']);
-        ?>
-    <?php endif; ?>
+   
     
     <div class="card shadow-sm border-0">
         <div class="card-body">

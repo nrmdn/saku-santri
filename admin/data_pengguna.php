@@ -50,17 +50,8 @@ include 'layout/sidebar.php';
 
 
 <div class="container-fluid">
-    <!-- ALERT NOTIFIKASI PENGGUNA -->
-    <?php if (isset($_SESSION['pengguna_message'])): ?>
-        <div class="alert alert-<?= $_SESSION['pengguna_status']; ?> alert-dismissible fade show shadow-sm mb-4" role="alert">
-            <?= htmlspecialchars($_SESSION['pengguna_message']); ?>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        <?php 
-            unset($_SESSION['pengguna_message']);
-            unset($_SESSION['pengguna_status']);
-        ?>
-    <?php endif; ?>
+
+  
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">Data Pengguna (Admin)</h2>
