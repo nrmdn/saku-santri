@@ -1,0 +1,351 @@
+/* 
+========================================================================
+   SPARK ADMIN - COMPATIBILITY & RESPONSIVE MASTER STYLESHEET
+   Optimized for Mobile (HP), Tablet, and Desktop Devices
+========================================================================
+*/
+
+/* ---------------------------------------------------------------------
+   1. Base & Container Fluid Reset
+   --------------------------------------------------------------------- */
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Ensure images and media never overflow container */
+img,
+svg,
+video,
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ---------------------------------------------------------------------
+   2. Tables & Data Tables Responsiveness
+   --------------------------------------------------------------------- */
+.table-responsive {
+    border-radius: var(--radius-xl, 14px);
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    width: 100%;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-light, #e9efef);
+}
+
+.table {
+    margin-bottom: 0;
+    color: var(--text-main, #0b130f);
+    border-color: var(--border-light, #e9efef);
+    vertical-align: middle;
+    width: 100%;
+}
+
+.table thead th {
+    background: #F8FAF9;
+    color: var(--text-muted-green, #6c7e75);
+    border-color: var(--border-light, #e9efef);
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    padding: .85rem 1rem;
+    white-space: nowrap;
+}
+
+.table tbody td {
+    padding: .85rem 1rem;
+    border-color: var(--border-light, #e9efef);
+    font-size: .86rem;
+}
+
+.table-hover>tbody>tr:hover>* {
+    background-color: #F8FAF9;
+}
+
+.table-dark th,
+.table-dark td,
+.table-dark {
+    --bs-table-bg: #F8FAF9;
+    --bs-table-color: var(--text-muted-green, #6c7e75);
+    --bs-table-border-color: var(--border-light, #e9efef);
+}
+
+/* ---------------------------------------------------------------------
+   3. Buttons & Form Elements (Touch-Friendly)
+   --------------------------------------------------------------------- */
+.btn {
+    border-radius: var(--radius-md, 8px);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--brand-forest-medium, #072f1f);
+    --bs-btn-border-color: var(--brand-forest-medium, #072f1f);
+    --bs-btn-hover-bg: var(--brand-forest-dark, #051c12);
+    --bs-btn-hover-border-color: var(--brand-forest-dark, #051c12);
+}
+
+.btn-success {
+    --bs-btn-bg: var(--sys-green, #22c55e);
+    --bs-btn-border-color: var(--sys-green, #22c55e);
+    --bs-btn-hover-bg: #16a34a;
+    --bs-btn-hover-border-color: #16a34a;
+}
+
+.btn-danger {
+    --bs-btn-bg: var(--sys-red, #ef4444);
+    --bs-btn-border-color: var(--sys-red, #ef4444);
+    --bs-btn-hover-bg: #dc2626;
+    --bs-btn-hover-border-color: #dc2626;
+}
+
+.btn-warning {
+    --bs-btn-bg: #f59e0b;
+    --bs-btn-border-color: #f59e0b;
+    --bs-btn-hover-bg: #d97706;
+    --bs-btn-hover-border-color: #d97706;
+}
+
+.form-control,
+.form-select {
+    border-color: var(--border-light, #e9efef);
+    border-radius: var(--radius-md, 8px);
+    padding: .65rem .85rem;
+    font-size: 15px;
+    /* Minimum 15-16px prevents iOS Safari auto-zoom */
+    font-weight: 500;
+    max-width: 100%;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: rgba(7, 47, 31, .35);
+    box-shadow: 0 0 0 .2rem rgba(180, 241, 5, .12);
+}
+
+.form-label {
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--text-main, #0b130f);
+    margin-bottom: .45rem;
+}
+
+/* ---------------------------------------------------------------------
+   4. Cards & Modals Responsiveness
+   --------------------------------------------------------------------- */
+.card {
+    border-radius: var(--radius-xl, 16px);
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.card>.card-body {
+    padding: 1.25rem;
+}
+
+.modal-content {
+    border: none;
+    border-radius: var(--radius-xl, 18px);
+    box-shadow: var(--shadow-lg, 0 20px 50px rgba(11, 19, 15, 0.08));
+    max-width: 100%;
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-light, #e9efef);
+    padding: 1.1rem 1.35rem;
+}
+
+.modal-body {
+    padding: 1.35rem;
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-light, #e9efef);
+    padding: 1rem 1.35rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.alert {
+    border-radius: var(--radius-lg, 12px);
+    border: none;
+}
+
+.badge {
+    font-weight: 700;
+}
+
+.text-success {
+    color: var(--sys-green, #22c55e) !important;
+}
+
+.text-danger {
+    color: var(--sys-red, #ef4444) !important;
+}
+
+/* ---------------------------------------------------------------------
+   5. Global Responsive Media Queries (Mobile & Tablet Layouts)
+   --------------------------------------------------------------------- */
+
+/* === SCREEN SIZE <= 1199.98px (Tablet & Below) === */
+@media (max-width: 1199.98px) {
+    .main-wrapper {
+        margin-left: 0 !important;
+        padding: 1.5rem 1.25rem !important;
+    }
+
+    .navbar-custom {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-top: -1.5rem !important;
+        margin-left: -1.25rem !important;
+        margin-right: -1.25rem !important;
+        padding: 0.9rem 1.25rem !important;
+        grid-template-columns: none !important;
+        gap: 0.75rem !important;
+    }
+
+    .navbar-search-wrapper {
+        display: none !important;
+        /* Hide intrusive search bar to keep navbar clean on tablets */
+    }
+
+    .sidebar-wrapper {
+        z-index: 1050;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* === SCREEN SIZE <= 767.98px (Mobile Phones & Small Tablets) === */
+@media (max-width: 767.98px) {
+    body {
+        font-size: 0.88rem;
+    }
+
+    .main-wrapper {
+        padding: 1rem 0.75rem !important;
+    }
+
+    .navbar-custom {
+        margin-top: -1rem !important;
+        margin-left: -0.75rem !important;
+        margin-right: -0.75rem !important;
+        padding: 0.75rem 0.85rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .navbar-left {
+        gap: 0.4rem;
+    }
+
+    .btn-quick-action {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.75rem;
+    }
+
+    /* Page Titles and Action Headers Auto-wrap */
+    .page-header,
+    .container-fluid>.d-flex.justify-content-between {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+        margin-bottom: 1.25rem !important;
+    }
+
+    .container-fluid>.d-flex.justify-content-between>h2,
+    .container-fluid>.d-flex.justify-content-between>h3,
+    .page-header h1 {
+        font-size: 1.35rem !important;
+        line-height: 1.25;
+    }
+
+    .container-fluid>.d-flex.justify-content-between>.d-flex {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    .container-fluid>.d-flex.justify-content-between>.d-flex .btn,
+    .container-fluid>.d-flex.justify-content-between>.d-flex .btn-custom,
+    .container-fluid>.d-flex.justify-content-between>.btn,
+    .container-fluid>.d-flex.justify-content-between>.btn-custom {
+        flex: 1 1 auto;
+        padding: 0.5rem 0.85rem;
+        font-size: 0.825rem;
+        text-align: center;
+    }
+
+    /* Card bodies on mobile */
+    .card>.card-body {
+        padding: 0.95rem;
+    }
+
+    /* Stat Cards Sizing */
+    .card-stat {
+        padding: 1rem;
+    }
+
+    .card-stat .stat-value {
+        font-size: 1.45rem !important;
+    }
+
+    /* Tables on mobile */
+    .table thead th {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.7rem;
+    }
+
+    .table tbody td {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.82rem;
+    }
+
+    /* Modals on small screens */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 0.9rem;
+    }
+}
+
+/* === SCREEN SIZE <= 480px (Compact Mobile Phones) === */
+@media (max-width: 480px) {
+    .main-wrapper {
+        padding: 0.85rem 0.5rem !important;
+    }
+
+    .navbar-custom {
+        margin-left: -0.5rem !important;
+        margin-right: -0.5rem !important;
+        padding: 0.65rem 0.5rem !important;
+    }
+
+    .card>.card-body {
+        padding: 0.75rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .btn-sm {
+        padding: 0.35rem 0.6rem;
+        font-size: 0.78rem;
+    }
+}

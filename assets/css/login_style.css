@@ -1,0 +1,395 @@
+/* 
+========================================================================
+   TAPCASH SANTRI - ADMIN LOGIN STYLESHEET
+   Mobile-First Responsive: HP → Tablet → Laptop → Desktop
+   
+   Approach: Base styles = mobile. Media queries scale UP.
+   No Bootstrap order-* conflicts. All layout is self-contained.
+========================================================================
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary-color: #0f6848;
+    --primary-dark: #094731;
+    --accent-color: #f59e0b;
+    --accent-hover: #d97706;
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --bg-light: #f8fafc;
+}
+
+/* =====================================================================
+   BASE RESET
+   ===================================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body.login-page {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #ffffff;
+    color: var(--text-dark);
+    overflow-x: hidden;
+}
+
+/* =====================================================================
+   MOBILE BASE (default, < 768px)
+   Vertical stack: Slider banner on top (220px), Form card below
+   ===================================================================== */
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* --- Slider Pane (top banner on mobile) --- */
+.login-slider-pane {
+    width: 100%;
+    height: 220px;
+    flex-shrink: 0;
+    position: relative;
+    background-color: var(--primary-dark);
+    overflow: hidden;
+}
+
+.login-slider-pane .carousel,
+.login-slider-pane .carousel-inner,
+.login-slider-pane .carousel-item {
+    height: 100%;
+    width: 100%;
+}
+
+.login-slider-pane .carousel-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.85);
+}
+
+/* Hide overlay text on mobile */
+.slider-overlay-text {
+    display: none;
+}
+
+/* --- Form Pane (below banner on mobile) --- */
+.login-form-pane {
+    width: 100%;
+    flex: 1 1 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 32px 20px 40px;
+    background-color: #ffffff;
+    position: relative;
+    z-index: 2;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    margin-top: -20px;
+    box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.08);
+}
+
+
+/* =====================================================================
+   TABLET (>= 768px)
+   Side-by-side: Form 55% left, Slider 45% right
+   ===================================================================== */
+@media (min-width: 768px) {
+
+    body.login-page {
+        overflow: hidden;
+    }
+
+    .login-wrapper {
+        flex-direction: row;
+        height: 100vh;
+        height: 100dvh;
+        min-height: 0;
+    }
+
+    /* Form pane: LEFT side */
+    .login-form-pane {
+        width: 55%;
+        height: 100%;
+        align-items: center;
+        padding: 30px 28px;
+        overflow-y: auto;
+        /* Reset mobile rounded corners */
+        border-radius: 0;
+        margin-top: 0;
+        box-shadow: none;
+        /* Ensure form is first visually (left) via order */
+        order: 1;
+    }
+
+    /* Slider pane: RIGHT side */
+    .login-slider-pane {
+        width: 45%;
+        height: 100%;
+        order: 2;
+    }
+
+    .login-slider-pane .carousel,
+    .login-slider-pane .carousel-inner,
+    .login-slider-pane .carousel-item {
+        height: 100%;
+    }
+
+    .login-slider-pane .carousel-item img {
+        height: 100%;
+    }
+
+    /* Show overlay text on tablet */
+    .slider-overlay-text {
+        display: block;
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        padding: 16px 20px;
+        border-radius: 14px;
+        background: rgba(9, 71, 49, 0.85);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .slider-overlay-text h4 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .slider-overlay-text p {
+        font-size: 0.8rem;
+        opacity: 0.7;
+    }
+}
+
+
+/* =====================================================================
+   LAPTOP & DESKTOP (>= 992px)
+   Wider split: Form 46% left, Slider 54% right
+   ===================================================================== */
+@media (min-width: 992px) {
+
+    .login-form-pane {
+        width: 46%;
+        padding: 40px 50px;
+    }
+
+    .login-slider-pane {
+        width: 54%;
+    }
+
+    .slider-overlay-text {
+        bottom: 40px;
+        left: 40px;
+        right: 40px;
+        padding: 24px 28px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(12px);
+    }
+
+    .slider-overlay-text h4 {
+        font-size: 1.15rem;
+    }
+
+    .slider-overlay-text p {
+        font-size: 0.85rem;
+    }
+}
+
+
+/* =====================================================================
+   LARGE DESKTOP (>= 1400px)
+   ===================================================================== */
+@media (min-width: 1400px) {
+
+    .login-form-pane {
+        width: 42%;
+        padding: 50px 70px;
+    }
+
+    .login-slider-pane {
+        width: 58%;
+    }
+}
+
+
+/* =====================================================================
+   SHARED FORM & COMPONENT STYLES
+   ===================================================================== */
+
+.login-card-inner {
+    width: 100%;
+    max-width: 420px;
+}
+
+.brand-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #e8f5ee;
+    color: var(--primary-color);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.825rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+}
+
+.login-title {
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.login-subtitle {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-bottom: 26px;
+}
+
+/* --- Form Inputs --- */
+.form-group-custom {
+    margin-bottom: 18px;
+}
+
+.form-group-custom label {
+    display: block;
+    font-size: 0.825rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    background: var(--bg-light);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.input-group-custom:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(15, 104, 72, 0.12);
+    background: #ffffff;
+}
+
+.input-icon {
+    padding: 12px 14px;
+    color: var(--text-muted);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.input-group-custom .form-control {
+    border: none;
+    background: transparent;
+    padding: 12px 14px 12px 0;
+    font-size: 15px;
+    font-family: inherit;
+    font-weight: 500;
+    color: var(--text-dark);
+    width: 100%;
+    min-height: 0;
+}
+
+.input-group-custom .form-control:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* --- Remember Me --- */
+.login-remember {
+    margin-bottom: 20px;
+}
+
+.login-remember .form-check-label {
+    color: var(--text-muted);
+    font-size: 0.825rem;
+    font-weight: 500;
+}
+
+/* --- Login Button --- */
+.btn-login {
+    background: linear-gradient(135deg, #0f6848, #094731);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.98rem;
+    padding: 13px 20px;
+    border-radius: 12px;
+    border: none;
+    width: 100%;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 18px rgba(15, 104, 72, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.btn-login:hover {
+    background: linear-gradient(135deg, #15803d, #0f6848);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(15, 104, 72, 0.35);
+    color: #ffffff;
+}
+
+/* --- Back Home Link --- */
+.login-back-link {
+    text-align: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-back-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.btn-back-home:hover {
+    color: var(--primary-color);
+}
