@@ -22,12 +22,7 @@ ADD INDEX IF NOT EXISTS idx_transaksi_tanggal (tanggal);
 
 -- 3. Penambahan kolom role, failed_attempts, dan locked_until pada tabel users
 ALTER TABLE users
-ADD COLUMN IF NOT EXISTS role ENUM(
-    'superadmin',
-    'admin',
-    'bendahara',
-    'operator'
-) NOT NULL DEFAULT 'admin',
+ADD COLUMN IF NOT EXISTS role ENUM('superadmin', 'admin') NOT NULL DEFAULT 'admin',
 ADD COLUMN IF NOT EXISTS failed_attempts INT NOT NULL DEFAULT 0,
 ADD COLUMN IF NOT EXISTS locked_until DATETIME NULL DEFAULT NULL;
 
