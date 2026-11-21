@@ -1,18 +1,60 @@
-
 </div>
 
+<!-- JS Bawaan Bootstrap & Dashboard -->
 <script src="../assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/dashboard.js"></script>
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- jQuery & DataTables JS via jsDelivr -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/datatables.net-bs5@1.13.7/js/dataTables.bootstrap5.min.js"></script>
 
 <!-- PANGGIL LIBRARY SWEETALERT2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<!-- SCRIPT INISIALISASI DATATABLES GLOBAL -->
+<script>
+$(document).ready(function() {
+    var konfigurasiDataTables = {
+        "lengthMenu": [ [10, 20, 40, 50, 100, -1], [10, 20, 40, 50, 100, "Semua"] ],
+        "pageLength": 20,
+        "language": {
+            "sEmptyTable":   "Tidak ada data yang tersedia pada tabel ini",
+            "sProcessing":   "Sedang memproses...",
+            "sLengthMenu":   "Tampilkan _MENU_ baris data",
+            "sZeroRecords":  "Tidak ditemukan data yang sesuai",
+            "sInfo":         "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+            "sInfoEmpty":    "Menampilkan 0 sampai 0 dari 0 data",
+            "sInfoFiltered": "(disaring dari _MAX_ data keseluruhan)",
+            "sSearch":       "Cari Cepat:",
+            "oPaginate": {
+                "sFirst":    "Awal",
+                "sPrevious": "Mundur",
+                "sNext":     "Maju",
+                "sLast":     "Akhir"
+            }
+        },
+        // Memicu kemunculan tabel setelah DataTables selesai diproses
+        "initComplete": function(settings, json) {
+            $(this).css({
+                'visibility': 'visible',
+                'opacity': '1'
+            }); 
+        }
+    };
+
+    if ($('#tabelSantri').length > 0) {
+        $('#tabelSantri').DataTable(konfigurasiDataTables);
+    }
+    
+    if ($('#tabelPengguna').length > 0) {
+        $('#tabelPengguna').DataTable(konfigurasiDataTables);
+    }
+});
+</script>
+
 <!-- SCRIPT PENGUBAH SESSION MENJADI SWEETALERT -->
 <?php 
-// Kumpulkan semua jenis session notifikasi yang Anda gunakan
 $alert_status = '';
 $alert_message = '';
 
@@ -30,12 +72,9 @@ if (isset($_SESSION['santri_message'])) {
     unset($_SESSION['detail_message'], $_SESSION['detail_status']);
 }
 
-// Jika ada pesan, jalankan SweetAlert
 if ($alert_message !== ''): 
-    // Ubah status bawaan bootstrap (danger/warning) menjadi format SweetAlert (error/warning)
     $icon = $alert_status;
     if ($icon === 'danger') $icon = 'error';
-    
     $title = ($icon === 'success') ? 'Berhasil!' : (($icon === 'error') ? 'Gagal!' : 'Perhatian!');
 ?>
     <script>
@@ -46,7 +85,7 @@ if ($alert_message !== ''):
                 text: '<?= $alert_message ?>',
                 showConfirmButton: true,
                 confirmButtonColor: '#0d6efd',
-                timer: <?= ($icon === 'success') ? '3000' : 'null' ?> // Sukses hilang dalam 3 detik, Error harus di-klik OK
+                timer: <?= ($icon === 'success') ? '3000' : 'null' ?>
             });
         });
     </script>

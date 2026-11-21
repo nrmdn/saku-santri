@@ -136,28 +136,28 @@ include 'layout/sidebar.php';
 
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold text-secondary">Ganti Foto Profil</label>
-                                                <input type="file" class="form-control" name="foto_baru" accept="image/png, image/jpeg, image/jpg">
+                                                <input type="file" class="form-control form-control-lg rounded-3 border-success" name="foto_baru" accept="image/png, image/jpeg, image/jpg">
                                                 <small class="text-muted">Biarkan kosong jika tidak ingin mengganti foto.</small>
                                             </div>
 
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold text-secondary">Nama Lengkap</label>
-                                                <input type="text" class="form-control" name="nama_lengkap" value="<?= htmlspecialchars($row['nama_lengkap']); ?>" required>
+                                                <input type="text" class="form-control form-control-lg rounded-3 border-success" name="nama_lengkap" value="<?= htmlspecialchars($row['nama_lengkap']); ?>" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold text-secondary">Username</label>
-                                                <input type="text" class="form-control" name="username" value="<?= htmlspecialchars($row['username']); ?>" required>
+                                                <input type="text" class="form-control form-control-lg rounded-3 border-success" name="username" value="<?= htmlspecialchars($row['username']); ?>" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold text-secondary">Pilih Role</label>
-                                                <select class="form-select" name="role" required>
+                                                <select class="form-select form-select-lg rounded-3 border-success" name="role" required>
                                                     <option value="superadmin" <?= ($row['role'] == 'superadmin') ? 'selected' : ''; ?>>Superadmin</option>
                                                     <option value="admin" <?= ($row['role'] == 'admin') ? 'selected' : ''; ?>>Admin (Bendahara)</option>
                                                 </select>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label fw-bold text-secondary">Password Baru</label>
-                                                <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak diubah">
+                                                <input type="password" class="form-control form-control-lg rounded-3 border-success" name="password" placeholder="Kosongkan jika tidak diubah">
                                             </div>
                                         </div>
                                         <div class="modal-footer bg-light">
@@ -216,27 +216,27 @@ include 'layout/sidebar.php';
                     
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Foto Profil (Opsional)</label>
-                        <input type="file" class="form-control" name="foto" accept="image/png, image/jpeg, image/jpg">
+                        <input type="file" class="form-control form-control-lg rounded-3 border-success" name="foto" accept="image/png, image/jpeg, image/jpg">
                     </div>
                     
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Nama Lengkap</label>
-                        <input type="text" class="form-control" name="nama_lengkap" required>
+                        <input type="text" class="form-control form-control-lg rounded-3 border-success" name="nama_lengkap" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Username</label>
-                        <input type="text" class="form-control" name="username" required>
+                        <input type="text" class="form-control form-control-lg rounded-3 border-success" name="username" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Pilih Role</label>
-                        <select class="form-select" name="role" required>
+                        <select class="form-select form-select-lg rounded-3 border-success" name="role" required>
                             <option value="admin">Admin (Bendahara)</option>
                             <option value="superadmin">Superadmin</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Password</label>
-                        <input type="password" class="form-control" name="password" required minlength="6">
+                        <input type="password" class="form-control form-control-lg rounded-3 border-success" name="password" required minlength="6">
                     </div>
                 </div>
                 <div class="modal-footer bg-light">

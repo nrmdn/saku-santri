@@ -45,6 +45,13 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
                         <span>Dashboard</span>
                     </a>
                 </li>
+
+                <li class="sidebar-menu-item">
+                    <a href="profile.php" class="sidebar-menu-link <?= basename($_SERVER['PHP_SELF']) === 'profile.php' ? 'active' : ''; ?>">
+                        <i class="bi bi-person-fill"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -74,7 +81,7 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
         </div>
 
         <div class="sidebar-menu-section">
-            <div class="sidebar-menu-title">Transaksi</div>
+            <div class="sidebar-menu-title">Transaksi & Laporan</div>
             <ul class="sidebar-menu-list">
                 <?php if (has_permission('laporan_cash') || has_permission('view_laporan')): ?>
                 <li class="sidebar-menu-item">
@@ -84,6 +91,13 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
                     </a>
                 </li>
                 <?php endif; ?>
+
+                <li class="sidebar-menu-item">
+                    <a href="riwayat_laporan_wa.php" class="sidebar-menu-link <?= basename($_SERVER['PHP_SELF']) === 'riwayat_laporan_wa.php' ? 'active' : ''; ?>">
+                        <i class="bi bi-whatsapp text-success"></i>
+                        <span>Riwayat WA Laporan</span>
+                    </a>
+                </li>
 
                 <?php if (has_permission('verifikasi_topup')): ?>
                 <li class="sidebar-menu-item">
@@ -110,6 +124,7 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
                         <span>Ganti Password</span>
                     </a>
                 </li>
+                
                 <li class="sidebar-menu-item">
                     <a href="logout.php" class="sidebar-menu-link text-danger">
                         <i class="bi bi-box-arrow-right"></i>
@@ -121,7 +136,7 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
     </div>
 
     <div class="sidebar-profile">
-         <img src="../assets/images/<?= e($foto); ?>" class="sidebar-profile-img" alt="Foto">
+        <img src="../assets/images/<?= e($foto); ?>" class="sidebar-profile-img" alt="Foto">
         <div class="sidebar-profile-info">
             <div class="sidebar-profile-name d-flex align-items-center gap-1">
                 <?= e($nama_admin); ?>
@@ -164,6 +179,7 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
                     <?php if (has_permission('verifikasi_topup')): ?>
                     <li><a class="dropdown-item" href="verifikasi_topup.php"><i class="bi bi-patch-check"></i> Verifikasi Top Up</a></li>
                     <?php endif; ?>
+                    <li><a class="dropdown-item" href="riwayat_laporan_wa.php"><i class="bi bi-whatsapp"></i> Riwayat WA Laporan</a></li>
                 </ul>
             </div>
         </div>
@@ -190,6 +206,7 @@ $total_pending_topup = (int)($d_badge_topup['total_pending'] ?? 0);
                     <li class="dropdown-header" style="font-size: 8px;">
                         Selamat datang, <?= e($nama_admin); ?>
                     </li>
+                    <li><a class="dropdown-item" href="profile.php"><i class="bi bi-person"></i> Profile</a></li>
                     <li><a class="dropdown-item" href="ganti_password.php"><i class="bi bi-key"></i> Ganti Password</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger" href="logout.php"><i class="bi bi-box-arrow-right"></i> Keluar</a></li>

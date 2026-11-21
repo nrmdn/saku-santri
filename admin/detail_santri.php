@@ -326,7 +326,7 @@ include 'layout/sidebar.php';
                         <table class="table table-hover align-middle mb-0" style="font-size: 14px;">
                             <thead class="table-light">
                                 <tr>
-                                    <th width="25%" class="py-3 ps-3">Tanggal & Waktu</th>
+                                    <th width="20%" class="py-3 ps-3">Tanggal</th>
                                     <th width="25%" class="py-3">Nominal Masuk</th>
                                     <th class="py-3">Keterangan Tambahan</th>
                                 </tr>
@@ -372,7 +372,7 @@ include 'layout/sidebar.php';
                         <table class="table table-hover align-middle mb-0" style="font-size: 14px;">
                             <thead class="table-light">
                                 <tr>
-                                    <th width="25%" class="py-3 ps-3">Tanggal & Waktu</th>
+                                    <th width="20%" class="py-3 ps-3">Tanggal</th>
                                     <th width="25%" class="py-3">Nominal Keluar</th>
                                     <th class="py-3">Keterangan Tambahan</th>
                                 </tr>

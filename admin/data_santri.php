@@ -6,8 +6,43 @@ include 'layout/header.php';
 include 'layout/sidebar.php'; 
 ?>
 
+<!-- CUSTOM CSS UNTUK EFEK LOADING (SMART OVERLAY) -->
+<style>
+    .loading-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: #ffffff; /* Menutupi tabel sepenuhnya saat proses render */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        border-radius: 12px;
+        transition: opacity 0.4s ease-in-out;
+    }
+
+    .loader {
+        width: 42px;
+        height: 42px;
+        border: 4px solid #e9ecef;
+        border-bottom-color: #198754; 
+        border-radius: 50%;
+        display: inline-block;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+
 <!-- KONTEN UTAMA DIMULAI -->
-<div class="container-fluid">
+<div class="container-fluid position-relative">
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">Data Santri</h2>
         
@@ -23,13 +58,19 @@ include 'layout/sidebar.php';
         </div>
         <?php endif; ?>
     </div>
-
-   
     
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
+    <div class="card shadow-sm border-0 position-relative">
+        
+        <!-- OVERLAY LOADING -->
+        <div id="loadingIndicator" class="loading-overlay">
+            <span class="loader"></span>
+            <p class="mt-3 text-muted fw-bold" style="font-size: 13px; letter-spacing: 0.5px;">Memuat data...</p>
+        </div>
+
+        <!-- ISI KARTU TABEL (Tinggi dikunci sementara dengan inline style) -->
+        <div class="card-body" id="tabelContainer" style="max-height: 300px; overflow: hidden;">
             <div class="table-responsive">
-                    <table id="tabelSantri" class="table table-hover table-bordered align-middle">
+                <table id="tabelSantri" class="table table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
                             <th width="5%" class="text-center">No</th>
@@ -125,20 +166,20 @@ include 'layout/sidebar.php';
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Ganti Foto Profil</label>
-                                                        <input type="file" class="form-control form-control-sm" name="foto_baru" accept="image/png, image/jpeg, image/jpg">
+                                                        <input type="file" class="form-control form-control-lg rounded-3 border-success" name="foto_baru" accept="image/png, image/jpeg, image/jpg">
                                                         <small class="text-muted" style="font-size: 11px;">Biarkan kosong jika tidak diganti.</small>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">NIS (Nomor Induk Santri)</label>
-                                                        <input type="number" oninput="javascript: if (this.value.length > 7) this.value = this.value.slice(0, 7);" inputmode="numeric" pattern="[0-9]{7}" class="form-control" name="nis" value="<?= htmlspecialchars($row['nis']); ?>" required>
+                                                        <input type="number" oninput="javascript: if (this.value.length > 7) this.value = this.value.slice(0, 7);" inputmode="numeric" pattern="[0-9]{7}" class="form-control form-control-lg rounded-3 border-success" name="nis" value="<?= htmlspecialchars($row['nis']); ?>" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Nama Lengkap</label>
-                                                        <input type="text" class="form-control" name="nama" value="<?= htmlspecialchars($row['nama']); ?>" required>
+                                                        <input type="text" class="form-control form-control-lg rounded-3 border-success" name="nama" value="<?= htmlspecialchars($row['nama']); ?>" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Jenis Kelamin</label>
-                                                        <select class="form-select" name="jk" required>
+                                                        <select class="form-select form-select-lg rounded-3 border-success" name="jk" required>
                                                             <option value="L" <?= ($row['jk'] == 'L') ? 'selected' : ''; ?>>Laki-laki</option>
                                                             <option value="P" <?= ($row['jk'] == 'P') ? 'selected' : ''; ?>>Perempuan</option>
                                                         </select>
@@ -149,23 +190,23 @@ include 'layout/sidebar.php';
                                                     <h6 class="fw-bold text-success mb-3 border-bottom pb-2">Data Pribadi & Orang Tua</h6>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Tempat, Tanggal Lahir</label>
-                                                        <input type="text" class="form-control" name="ttl" value="<?= htmlspecialchars($row['ttl'] ?? ''); ?>" required>
+                                                        <input type="text" class="form-control form-control-lg rounded-3 border-success" name="ttl" value="<?= htmlspecialchars($row['ttl'] ?? ''); ?>" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Alamat Lengkap</label>
-                                                        <textarea class="form-control" name="alamat" rows="2" required><?= htmlspecialchars($row['alamat'] ?? ''); ?></textarea>
+                                                        <textarea class="form-control form-control-lg rounded-3 border-success" name="alamat" rows="2" required><?= htmlspecialchars($row['alamat'] ?? ''); ?></textarea>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Nama Orang Tua / Wali</label>
-                                                        <input type="text" class="form-control" name="nama_ortu" value="<?= htmlspecialchars($row['nama_ortu'] ?? ''); ?>" required>
+                                                        <input type="text" class="form-control form-control-lg rounded-3 border-success" name="nama_ortu" value="<?= htmlspecialchars($row['nama_ortu'] ?? ''); ?>" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">No. WhatsApp / HP</label>
-                                                        <input type="number" oninput="javascript: if (this.value.length > 13) this.value = this.value.slice(0, 13);" inputmode="numeric" pattern="[0-9]{13}" class="form-control" name="no_hp_ortu" value="<?= htmlspecialchars($row['no_hp_ortu'] ?? ''); ?>" required>
+                                                        <input type="number" oninput="javascript: if (this.value.length > 13) this.value = this.value.slice(0, 13);" inputmode="numeric" pattern="[0-9]{13}" class="form-control form-control-lg rounded-3 border-success" name="no_hp_ortu" value="<?= htmlspecialchars($row['no_hp_ortu'] ?? ''); ?>" required>
                                                     </div>
                                                     <div class="mb-3">
                                                         <label class="form-label fw-bold text-secondary small">Email Orang Tua (Akses Web)</label>
-                                                        <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($row['email'] ?? ''); ?>" required>
+                                                        <input type="email" class="form-control form-control-lg rounded-3 border-success" name="email" value="<?= htmlspecialchars($row['email'] ?? ''); ?>" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -244,19 +285,19 @@ include 'layout/sidebar.php';
                         <div class="col-md-6 border-end">
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Foto Profil (Opsional)</label>
-                                <input type="file" class="form-control" name="foto" accept="image/png, image/jpeg, image/jpg">
+                                <input type="file" class="form-control form-control-lg rounded-3 border-success" name="foto" accept="image/png, image/jpeg, image/jpg">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">NIS (Nomor Induk Santri)<span class="text-danger">*</span></label>
-                                <input type="number" oninput="javascript: if (this.value.length > 7) this.value = this.value.slice(0, 7);" inputmode="numeric" pattern="[0-9]{7}" class="form-control" name="nis" required>
+                                <input type="number" oninput="javascript: if (this.value.length > 7) this.value = this.value.slice(0, 7);" inputmode="numeric" pattern="[0-9]{7}" class="form-control form-control-lg rounded-3 border-success" name="nis" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Nama Lengkap<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="nama" required>
+                                <input type="text" class="form-control form-control-lg rounded-3 border-success" name="nama" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Jenis Kelamin<span class="text-danger">*</span></label>
-                                <select class="form-select" name="jk" required>
+                                <select class="form-select form-select-lg rounded-3 border-success" name="jk" required>
                                     <option value="" selected disabled>-- Pilih Jenis Kelamin --</option>
                                     <option value="L">Laki-laki</option>
                                     <option value="P">Perempuan</option>
@@ -268,23 +309,23 @@ include 'layout/sidebar.php';
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Tempat, Tanggal Lahir<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="ttl" required>
+                                <input type="text" class="form-control form-control-lg rounded-3 border-success" name="ttl" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Alamat Lengkap<span class="text-danger">*</span></label>
-                                <textarea class="form-control" name="alamat" rows="2" placeholder="Masukkan alamat lengkap santri..." required></textarea>
+                                <textarea class="form-control form-control-lg rounded-3 border-success" name="alamat" rows="2" placeholder="Masukkan alamat lengkap santri..." required></textarea>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Nama Orang Tua / Wali<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="nama_ortu" required>
+                                <input type="text" class="form-control form-control-lg rounded-3 border-success" name="nama_ortu" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">No. WhatsApp / HP Ortu<span class="text-danger">*</span></label>
-                                <input type="number" oninput="javascript: if (this.value.length > 13) this.value = this.value.slice(0, 13);" inputmode="numeric" pattern="[0-9]{13}" class="form-control" name="no_hp_ortu" required>
+                                <input type="number" oninput="javascript: if (this.value.length > 13) this.value = this.value.slice(0, 13);" inputmode="numeric" pattern="[0-9]{13}" class="form-control form-control-lg rounded-3 border-success" name="no_hp_ortu" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label fw-bold text-secondary small">Email Orang Tua <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" name="email" required>
+                                <input type="email" class="form-control form-control-lg rounded-3 border-success" name="email" required>
                             </div>
                         </div>
                     </div>
@@ -328,7 +369,7 @@ include 'layout/sidebar.php';
                     
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Pilih File Excel (.xls / .xlsx)</label>
-                        <input type="file" class="form-control" name="file_excel" accept=".xls,.xlsx" required>
+                        <input type="file" class="form-control form-control-lg rounded-3 border-success" name="file_excel" accept=".xls,.xlsx" required>
                     </div>
                 </div>
                 <div class="modal-footer bg-light">
@@ -342,18 +383,44 @@ include 'layout/sidebar.php';
     </div>
 </div>
 
-<?php endif; // Akhir blok khusus Superadmin ?>
+<?php endif; ?>
 
-<!-- SCRIPT AKTIVASI DATATABLES -->
+<!-- SCRIPT UNTUK PENDETEKSI LOADING OTOMATIS ANTI MELOMPAT -->
 <script>
-    $(document).ready(function() {
-        $('#tabelSantri').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/1.13.7/i18n/id.json"
-            },
-            "pageLength": 10
-        });
-    });
+document.addEventListener("DOMContentLoaded", function() {
+    
+    // Mengecek apakah DataTables sudah membuat wrapper
+    let checkTable = setInterval(function() {
+        if (document.querySelector('.dataTables_wrapper')) {
+            clearInterval(checkTable);
+            
+            // 1. Lepas gembok tinggi container setelah DataTables siap
+            let container = document.getElementById('tabelContainer');
+            if (container) {
+                container.style.maxHeight = '';
+                container.style.overflow = '';
+            }
+            
+            // 2. Hilangkan Loading Overlay dengan transisi halus
+            const loader = document.getElementById('loadingIndicator');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 400); 
+            }
+        }
+    }, 50);
+
+    // Fallback Darurat: Jika internet lambat dan DataTables gagal dalam 3 detik, paksa buka
+    setTimeout(function() {
+        clearInterval(checkTable);
+        let container = document.getElementById('tabelContainer');
+        if (container) { container.style.maxHeight = ''; container.style.overflow = ''; }
+        let loader = document.getElementById('loadingIndicator');
+        if (loader) { loader.style.display = 'none'; }
+    }, 3000);
+});
 </script>
-<!-- KONTEN UTAMA SELESAI -->
+
 <?php include 'layout/footer.php'; ?>

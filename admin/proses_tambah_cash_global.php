@@ -16,13 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 require_permission('laporan_cash');
 verify_csrf_token($_POST['csrf_token'] ?? '', true);
 
-$santri_id = validate_id($_POST['santri_id'] ?? null);
-$nominal = validate_nominal($_POST['nominal'] ?? 0, 1, 50000000);
+// Menangkap NIS dari input (bukan santri_id dari select)
+$nis_input  = trim((string)($_POST['nis'] ?? ''));
+$nominal    = validate_nominal($_POST['nominal'] ?? 0, 1, 50000000);
 $keterangan = trim((string)($_POST['keterangan'] ?? ''));
 
-if (!$santri_id || !$nominal || $keterangan === '') {
+if (empty($nis_input) || !$nominal || $keterangan === '') {
     $_SESSION['laporan_status'] = 'danger';
-    $_SESSION['laporan_message'] = 'Data cash masuk tidak valid.';
+    $_SESSION['laporan_message'] = 'Data cash masuk tidak valid atau NIS kosong.';
     header('Location: laporan_cash.php');
     exit;
 }
@@ -30,19 +31,22 @@ if (!$santri_id || !$nominal || $keterangan === '') {
 mysqli_begin_transaction($koneksi);
 
 try {
-    $stmt_santri = mysqli_prepare($koneksi, "SELECT id, nama, saldo FROM santri WHERE id = ? AND deleted_at IS NULL LIMIT 1 FOR UPDATE");
+    // Mencari ID Santri berdasarkan NIS
+    $stmt_santri = mysqli_prepare($koneksi, "SELECT id, nama, saldo FROM santri WHERE nis = ? AND deleted_at IS NULL LIMIT 1 FOR UPDATE");
     if (!$stmt_santri) {
         throw new Exception('Gagal membaca data santri.');
     }
-    mysqli_stmt_bind_param($stmt_santri, 'i', $santri_id);
+    mysqli_stmt_bind_param($stmt_santri, 's', $nis_input);
     mysqli_stmt_execute($stmt_santri);
     $res_s = mysqli_stmt_get_result($stmt_santri);
     $santri = mysqli_fetch_assoc($res_s);
     mysqli_stmt_close($stmt_santri);
 
     if (!$santri) {
-        throw new Exception('Santri tidak ditemukan.');
+        throw new Exception('Santri dengan NIS tersebut tidak ditemukan atau sudah nonaktif.');
     }
+
+    $santri_id = $santri['id']; // Ambil ID untuk diteruskan ke proses transaksi
 
     $tanggal = date('Y-m-d H:i:s');
     $stmt_trx = mysqli_prepare($koneksi, "INSERT INTO transaksi (santri_id, tanggal, jenis_transaksi, nominal, keterangan, status) VALUES (?, ?, 'masuk', ?, ?, 'sukses')");

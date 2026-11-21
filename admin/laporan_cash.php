@@ -37,7 +37,7 @@ $q_debit = mysqli_query($koneksi, "SELECT SUM(nominal) AS total_debit FROM trans
 $d_debit = mysqli_fetch_assoc($q_debit);
 $total_debit = $d_debit['total_debit'] ? $d_debit['total_debit'] : 0;
 
-// 4. Hitung Total Saldo Aktif Keseluruhan (ATM Bendahara - Tetap Kumulatif Total)
+// 4. Hitung Total Saldo Aktif Keseluruhan (ATM Bendahara)
 $q_saldo_kumulatif = mysqli_query($koneksi, "SELECT SUM(saldo) AS total_saldo FROM santri");
 $d_saldo_kumulatif = mysqli_fetch_assoc($q_saldo_kumulatif);
 $total_saldo_bendahara = $d_saldo_kumulatif['total_saldo'] ? $d_saldo_kumulatif['total_saldo'] : 0;
@@ -73,7 +73,7 @@ include 'layout/sidebar.php';
                 <i class="fas fa-calendar-alt me-1"></i>Filter
             </button>
 
-            <!-- Tombol Reset Filter (Muncul jika filter aktif) -->
+            <!-- Tombol Reset Filter -->
             <?php if(!empty($tgl_mulai) || !empty($tgl_selesai)) { ?>
                 <a href="laporan_cash.php" class="btn btn-outline-danger btn-sm shadow-sm px-3 fw-bold">
                     <i class="fas fa-times me-1"></i>Reset
@@ -87,7 +87,7 @@ include 'layout/sidebar.php';
         </div>
     </div>
 
-    <!-- TATA LETAK CARD ATAS: KIRI KELUAR, KANAN MASUK (Ukuran Compact) -->
+    <!-- TATA LETAK CARD ATAS -->
     <div class="row mb-3">
         <!-- Kanan: Card Kredit (Masuk) -->
         <div class="col-md-6 mb-2">
@@ -266,11 +266,11 @@ include 'layout/sidebar.php';
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary small">Mulai Tanggal</label>
-                        <input type="date" class="form-control rounded-3" name="tgl_mulai" value="<?= $tgl_mulai; ?>" required>
+                        <input type="date" class="form-control form-control-lg rounded-3 border-success" name="tgl_mulai" value="<?= $tgl_mulai; ?>" required>
                     </div>
                     <div class="mb-2">
                         <label class="form-label fw-bold text-secondary small">Sampai Tanggal</label>
-                        <input type="date" class="form-control rounded-3" name="tgl_selesai" value="<?= $tgl_selesai; ?>" required>
+                        <input type="date" class="form-control form-control-lg rounded-3 border-success" name="tgl_selesai" value="<?= $tgl_selesai; ?>" required>
                     </div>
                 </div>
                 <div class="modal-footer bg-light rounded-bottom-4 border-0 justify-content-center">
@@ -293,20 +293,36 @@ include 'layout/sidebar.php';
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             
-            <form action="proses_tambah_cash_global.php" method="POST">
+            <form action="proses_tambah_cash_global.php" method="POST" id="formTambahCash">
                 <div class="modal-body p-4">
-                    <div class="mb-3">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? ''; ?>">
-                        <label class="form-label fw-bold text-secondary">Pilih Santri</label>
-                        <select class="form-select rounded-3" name="santri_id" required>
-                            <option value="" selected disabled>-- Cari dan Pilih Santri --</option>
-                            <?php
-                            $q_santri = mysqli_query($koneksi, "SELECT id, nis, nama FROM santri ORDER BY nama ASC");
-                            while($s = mysqli_fetch_assoc($q_santri)) {
-                                echo "<option value='{$s['id']}'>[{$s['nis']}] {$s['nama']}</option>";
-                            }
-                            ?>
-                        </select>
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?? ''; ?>">
+                    <input type="hidden" name="nis" id="inputNisFinal" required>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">Masukkan NIS Santri</label>
+                        <div class="input-group shadow-sm">
+                            <span class="input-group-text bg-white text-secondary border-end-0"><i class="fas fa-id-card"></i></span>
+                            <input type="number" oninput="javascript: if (this.value.length > 7) this.value = this.value.slice(0, 7);" inputmode="numeric" pattern="[0-9]{7}" class="form-control border-start-0 border-end-0" id="inputNisCari" placeholder="Contoh: 2026001">
+                            <button class="btn btn-primary fw-bold" type="button" id="btnCekNis">
+                                <i class="fas fa-search me-1"></i>Cek NIS
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KOTAK PROFIL SANTRI -->
+                    <div id="hasilCekSantri" class="d-none mb-4">
+                        <div class="card border-success border-2 bg-success bg-opacity-10 shadow-none rounded-3">
+                            <div class="card-body p-3 d-flex align-items-center gap-3">
+                                <img src="" id="fotoSantriCek" class="rounded-circle border border-success border-2 shadow-sm" width="55" height="55" style="object-fit: cover; background-color: #fff;">
+                                <div>
+                                    <h6 class="fw-bold text-success mb-1" id="namaSantriCek">-</h6>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-success" id="nisSantriCekBadge">-</span>
+                                        <small class="text-secondary fw-bold" id="ortuSantriCek">-</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -316,13 +332,13 @@ include 'layout/sidebar.php';
                     
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Keterangan / Sumber Dana</label>
-                        <textarea class="form-control rounded-3" name="keterangan" rows="2" placeholder="Contoh: Setoran tunai melalui bendahara" required></textarea>
+                        <textarea class="form-control form-control-lg rounded-3 border-success" name="keterangan" rows="2" placeholder="Contoh: Setoran tunai melalui bendahara" required></textarea>
                     </div>
                 </div>
                 
                 <div class="modal-footer bg-light rounded-bottom-4 border-0">
                     <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold"><i class="fas fa-save me-2"></i>Simpan</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold"><i class="fas fa-save me-2"></i>Simpan Transaksi</button>
                 </div>
             </form>
         </div>
@@ -330,7 +346,7 @@ include 'layout/sidebar.php';
 </div>
 
 <!-- ============================================== -->
-<!-- MODAL FILTER CETAK PDF                         -->
+<!-- MODAL FILTER CETAK PDF & KIRIM WA              -->
 <!-- ============================================== -->
 <div class="modal fade" id="modalCetakPDF" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -343,7 +359,7 @@ include 'layout/sidebar.php';
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary">Pilih Jenis Laporan</label>
-                        <select class="form-select rounded-3" name="filter_jenis" id="filterJenis" onchange="toggleSantri()" required>
+                        <select class="form-select form-select-lg rounded-3 border-success" name="filter_jenis" id="filterJenis" onchange="toggleSantri()" required>
                             <option value="semua">Semua (Masuk & Keluar)</option>
                             <option value="masuk">Hanya Kredit (Uang Masuk)</option>
                             <option value="keluar">Hanya Debit (Uang Keluar)</option>
@@ -351,17 +367,22 @@ include 'layout/sidebar.php';
                         </select>
                     </div>
 
+                    <!-- PENCARIAN KETIK NIS / NAMA SANTRI VIA DATALIST -->
                     <div class="mb-4" id="wrapPilihSantri" style="display: none;">
-                        <label class="form-label fw-bold text-secondary">Pilih Santri</label>
-                        <select class="form-select rounded-3" name="santri_id">
-                            <option value="" selected disabled>-- Pilih Santri --</option>
+                        <label class="form-label fw-bold text-secondary">Ketik NIS / Nama Santri</label>
+                        <input type="text" class="form-control form-control-lg rounded-3 border-success" id="inputCariSantriPdf" list="listSantriPdf" placeholder="Ketik NIS atau Nama Santri..." autocomplete="off">
+                        
+                        <datalist id="listSantriPdf">
                             <?php
-                            $q_santri_opt = mysqli_query($koneksi, "SELECT id, nis, nama FROM santri ORDER BY nama ASC");
+                            $q_santri_opt = mysqli_query($koneksi, "SELECT id, nis, nama FROM santri WHERE deleted_at IS NULL ORDER BY nama ASC");
                             while($so = mysqli_fetch_assoc($q_santri_opt)) {
-                                echo "<option value='{$so['id']}'>[{$so['nis']}] {$so['nama']}</option>";
+                                echo "<option value='[{$so['nis']}] {$so['nama']}' data-id='{$so['id']}'></option>";
                             }
                             ?>
-                        </select>
+                        </datalist>
+                        
+                        <!-- Hidden Input untuk menyimpan ID Santri yang terpilih -->
+                        <input type="hidden" name="santri_id" id="santri_id_pdf" value="">
                     </div>
 
                     <hr class="text-muted">
@@ -370,36 +391,218 @@ include 'layout/sidebar.php';
                     <div class="row g-2">
                         <div class="col-6">
                             <label class="form-label fw-bold text-secondary small">Dari Tanggal</label>
-                            <input type="date" class="form-control rounded-3" name="tgl_mulai" value="<?= $tgl_mulai; ?>">
+                            <input type="date" class="form-control form-control-lg rounded-3 border-success" name="tgl_mulai" value="<?= $tgl_mulai; ?>">
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-bold text-secondary small">Sampai Tanggal</label>
-                            <input type="date" class="form-control rounded-3" name="tgl_selesai" value="<?= $tgl_selesai; ?>">
+                            <input type="date" class="form-control form-control-lg rounded-3 border-success" name="tgl_selesai" value="<?= $tgl_selesai; ?>">
                         </div>
                     </div>
                     <small class="text-muted mt-2 d-block" style="font-size: 11px;">*Kosongkan kolom tanggal di atas jika ingin mencetak semua riwayat dari awal.</small>
 
                 </div>
-                <div class="modal-footer bg-light rounded-bottom-4 border-0">
-                    <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold"><i class="fas fa-print me-2"></i>Generate PDF</button>
+                <div class="modal-footer bg-light rounded-bottom-4 border-0 justify-content-between">
+                    <button type="button" class="btn btn-secondary rounded-pill px-3" data-bs-dismiss="modal">Batal</button>
+                    <div class="d-flex gap-2">
+                        <button type="button" id="btnKirimWAPersantri" class="btn btn-success rounded-pill px-4 fw-bold" style="display: none;" onclick="kirimWAPersantri()">
+                            <i class="fab fa-whatsapp me-2"></i>Kirim ke WA
+                        </button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">
+                            <i class="fas fa-print me-2"></i>Generate PDF
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
+<!-- SWEETALERT2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-// Logika untuk menampilkan pilihan santri hanya jika filter "Per Santri" dipilih
+// Toggle tampilan pencarian santri & tombol Kirim WA
 function toggleSantri() {
     var jenis = document.getElementById('filterJenis').value;
     var wrap = document.getElementById('wrapPilihSantri');
+    var btnWa = document.getElementById('btnKirimWAPersantri');
+    
     if (jenis === 'persantri') {
         wrap.style.display = 'block';
+        if (btnWa) btnWa.style.display = 'inline-block';
     } else {
         wrap.style.display = 'none';
+        if (btnWa) btnWa.style.display = 'none';
     }
 }
+
+// Fungsi AJAX Kirim WA Laporan Khusus Per Santri
+function kirimWAPersantri() {
+    const santriId = document.getElementById('santri_id_pdf').value;
+    const modalForm = document.querySelector('#modalCetakPDF form');
+    const tglMulai = modalForm.querySelector('input[name="tgl_mulai"]').value;
+    const tglSelesai = modalForm.querySelector('input[name="tgl_selesai"]').value;
+
+    if (!santriId) {
+        Swal.fire({ icon: 'warning', title: 'Pilih Santri', text: 'Silakan ketik dan pilih santri terlebih dahulu dari daftar!' });
+        return;
+    }
+
+    Swal.fire({
+        title: 'Kirim Laporan ke WA?',
+        text: 'Laporan PDF periode pilihan akan langsung dikirimkan ke WhatsApp Wali Santri.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#25D366',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '<i class="fab fa-whatsapp me-1"></i> Ya, Kirim WA',
+        cancelButtonText: 'Batal',
+        customClass: { confirmButton: 'btn btn-success rounded-pill px-4 ms-2', cancelButton: 'btn btn-secondary rounded-pill px-4' },
+        buttonsStyling: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Sedang Memproses...',
+                text: 'Mencetak PDF dan mengirimkan pesan WhatsApp...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            const formData = new FormData();
+            formData.append('santri_id', santriId);
+            formData.append('tgl_mulai', tglMulai);
+            formData.append('tgl_selesai', tglSelesai);
+
+            fetch('kirim_wa_persantri.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil Terkirim!',
+                        text: data.message,
+                        confirmButtonColor: '#25D366',
+                        customClass: { confirmButton: 'btn btn-success rounded-pill px-4' },
+                        buttonsStyling: false
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Mengirim',
+                        text: data.message,
+                        confirmButtonColor: '#dc3545',
+                        customClass: { confirmButton: 'btn btn-danger rounded-pill px-4' },
+                        buttonsStyling: false
+                    });
+                }
+            })
+            .catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gangguan Server',
+                    text: 'Terjadi kesalahan jaringan atau server WA tidak merespon.',
+                    confirmButtonColor: '#dc3545',
+                    customClass: { confirmButton: 'btn btn-danger rounded-pill px-4' },
+                    buttonsStyling: false
+                });
+            });
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Logika Autocomplete Pencarian Santri di Modal PDF
+    const inputCari = document.getElementById('inputCariSantriPdf');
+    const hiddenId = document.getElementById('santri_id_pdf');
+
+    if (inputCari) {
+        inputCari.addEventListener('input', function() {
+            const val = this.value;
+            const options = document.querySelectorAll('#listSantriPdf option');
+            let foundId = '';
+
+            options.forEach(opt => {
+                if (opt.value === val) {
+                    foundId = opt.getAttribute('data-id');
+                }
+            });
+
+            hiddenId.value = foundId;
+        });
+    }
+
+    // 2. Script Fitur AJAX "Cek NIS" di Modal Tambah Cash
+    const btnCekNis = document.getElementById('btnCekNis');
+    const inputNisCari = document.getElementById('inputNisCari');
+    const inputNisFinal = document.getElementById('inputNisFinal');
+    const hasilDiv = document.getElementById('hasilCekSantri');
+    const formTambahCash = document.getElementById('formTambahCash');
+
+    if (inputNisCari) {
+        inputNisCari.addEventListener('input', function() {
+            inputNisFinal.value = '';
+            hasilDiv.classList.add('d-none');
+        });
+    }
+
+    if (btnCekNis) {
+        btnCekNis.addEventListener('click', function() {
+            const nis = inputNisCari.value.trim();
+            
+            if (nis === '') {
+                Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Silakan ketik NIS santri terlebih dahulu.' });
+                return;
+            }
+
+            const originalBtnHtml = btnCekNis.innerHTML;
+            btnCekNis.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Mencari...';
+            btnCekNis.disabled = true;
+
+            fetch('../api_cek_santri.php?nis=' + nis)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById('namaSantriCek').innerText = data.data.nama;
+                        document.getElementById('nisSantriCekBadge').innerText = 'NIS: ' + data.data.nis;
+                        document.getElementById('ortuSantriCek').innerHTML = '<i class="fas fa-user-friends me-1"></i> Wali: ' + data.data.nama_ortu;
+                        document.getElementById('fotoSantriCek').src = '../assets/images/' + data.data.foto;
+                        
+                        inputNisFinal.value = data.data.nis;
+                        hasilDiv.classList.remove('d-none');
+                    } else {
+                        inputNisFinal.value = '';
+                        hasilDiv.classList.add('d-none');
+                        Swal.fire({ icon: 'error', title: 'Tidak Ditemukan', text: data.message || 'Santri dengan NIS tersebut tidak ditemukan.' });
+                    }
+                })
+                .catch(error => {
+                    inputNisFinal.value = '';
+                    hasilDiv.classList.add('d-none');
+                    Swal.fire({ icon: 'error', title: 'Gangguan Server', text: 'Terjadi kesalahan jaringan saat memeriksa data santri.' });
+                })
+                .finally(() => {
+                    btnCekNis.innerHTML = originalBtnHtml;
+                    btnCekNis.disabled = false;
+                });
+        });
+    }
+
+    if (formTambahCash) {
+        formTambahCash.addEventListener('submit', function(e) {
+            if (inputNisFinal.value === '') {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Validasi Diperlukan',
+                    text: 'Silakan klik tombol "Cek NIS" dan pastikan profil santri muncul sebelum Anda menekan tombol Simpan Transaksi.'
+                });
+            }
+        });
+    }
+});
 </script>
 
 <?php include 'layout/footer.php'; ?>
